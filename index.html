@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#403b38">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Van & Ginger">
+<title>Van & Ginger Senior Care</title>
+<link rel="stylesheet" href="styles.css?v=1">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<script>
+(function(){
+  const standalone=window.matchMedia("(display-mode: standalone)").matches||window.navigator.standalone===true;
+  const ua=navigator.userAgent||"";
+  const isiOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  document.documentElement.classList.add(isiOS&&!standalone?"install-required":"install-cleared");
+})();
+</script>
+</head>
+<body>
+<div class="install-curtain" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+  <div class="install-card">
+    <div class="brand-mark"><span>V</span><span>G</span></div>
+    <div class="install-kicker">Van & Ginger Senior Care</div>
+    <h2 id="installTitle">Install to continue</h2>
+    <p>This private care app opens from its Home Screen icon.</p>
+    <ol>
+      <li><b>1</b><span>Tap Safari’s <strong>Share</strong> button.</span></li>
+      <li><b>2</b><span>Choose <strong>Add to Home Screen</strong>.</span></li>
+      <li><b>3</b><span>Tap <strong>Add</strong>, then open the new icon.</span></li>
+    </ol>
+  </div>
+</div>
+
+<div class="app-shell">
+  <header class="app-header">
+    <div>
+      <div class="eyebrow">private senior-dog care record</div>
+      <h1>Van & Ginger</h1>
+      <p>Medications, food, measurements, cautions, notes, and preserved history.</p>
+    </div>
+    <div class="device-note">Stored on this device</div>
+  </header>
+
+  <div class="dog-switcher" aria-label="Choose dog">
+    <button class="dog-tab van active" data-dog="van" onclick="switchDog('van')"><span class="dog-dot">V</span><span>Van</span></button>
+    <button class="dog-tab ginger" data-dog="ginger" onclick="switchDog('ginger')"><span class="dog-dot">G</span><span>Ginger</span></button>
+  </div>
+
+  <main>
+    <section id="home" class="screen active">
+      <div class="dog-banner">
+        <div class="avatar" id="homeAvatar">V</div>
+        <div><div class="eyebrow" id="homeEyebrow">Van’s care overview</div><h2 id="homeDogName">Van</h2><p id="homeProfileLine">Add age and breed in the profile.</p></div>
+      </div>
+      <div class="summary-grid">
+        <button class="summary-card" onclick="showScreen('medications')"><span>Active medications</span><strong id="medCount">0</strong><small>Open medications</small></button>
+        <button class="summary-card" onclick="showScreen('food')"><span>Active food items</span><strong id="foodCount">0</strong><small>Open food list</small></button>
+        <button class="summary-card" onclick="showScreen('more');showMorePanel('measurements')"><span>Latest weight</span><strong id="latestWeight">—</strong><small id="latestWeightDate">No entry</small></button>
+        <button class="summary-card" onclick="showScreen('log')"><span>Recent changes</span><strong id="historyCount">0</strong><small>Open timeline</small></button>
+      </div>
+      <div class="grid two">
+        <article class="card"><div class="section-head"><div><div class="eyebrow">current</div><h3 id="homeMedsTitle">Van’s medications</h3></div><button class="text-btn" onclick="showScreen('medications')">View all</button></div><div id="homeMeds"></div></article>
+        <article class="card"><div class="section-head"><div><div class="eyebrow">current</div><h3 id="homeFoodsTitle">Van’s foods</h3></div><button class="text-btn" onclick="showScreen('food')">View all</button></div><div id="homeFoods"></div></article>
+      </div>
+      <div class="grid two">
+        <article class="card"><div class="eyebrow">latest caution</div><h3 id="homeCautionTitle">Van’s caution</h3><div id="homeCaution"></div></article>
+        <article class="card"><div class="eyebrow">latest care note</div><h3 id="homeNoteTitle">Van’s note</h3><div id="homeNote"></div></article>
+      </div>
+      <article class="data-warning">Van and Ginger’s information is stored on this device. Use <strong>Save Backup</strong> regularly to protect it.</article>
+    </section>
+
+    <section id="medications" class="screen">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">active care</div><h2 id="medPageTitle">Van’s medications & treatments</h2></div><span class="dog-chip" id="medDogChip">Van</span></div>
+        <div class="form-grid three">
+          <div><label>Type</label><select id="treatmentType"><option>Medication</option><option>Vaccination</option><option>Flea & tick</option><option>Heartworm</option><option>Supplement</option><option>Other treatment</option></select></div>
+          <div><label>Name</label><input id="treatmentName" placeholder="e.g. Galliprant"></div>
+          <div><label>Dosage</label><input id="treatmentDosage" placeholder="e.g. 20 mg"></div>
+          <div><label>Frequency</label><input id="treatmentFrequency" placeholder="e.g. once daily"></div>
+          <div><label>Time of day</label><input id="treatmentTime" placeholder="e.g. with breakfast"></div>
+          <div><label>Date started / given</label><input id="treatmentStart" type="date"></div>
+          <div><label>Next due date</label><input id="treatmentDue" type="date"></div>
+          <div><label>End date</label><input id="treatmentEnd" type="date"></div>
+          <div><label>Prescribing veterinarian</label><input id="treatmentVet" placeholder="Optional"></div>
+        </div>
+        <div class="form-grid two-fields">
+          <div><label>Instructions</label><textarea id="treatmentInstructions" placeholder="How and when to give it"></textarea></div>
+          <div><label>Refill or general note</label><textarea id="treatmentNote" placeholder="Refill details, reactions, or reminders"></textarea></div>
+        </div>
+        <div class="actions"><button class="primary" id="treatmentSaveBtn" onclick="saveTreatment()">Add medication or treatment</button><button class="secondary hidden" id="treatmentCancelBtn" onclick="cancelTreatmentEdit()">Cancel edit</button></div>
+      </article>
+      <article class="card"><h3 id="activeTreatmentsTitle">Van’s active medications and treatments</h3><div id="treatmentList" class="entry-list"></div></article>
+    </section>
+
+    <section id="food" class="screen">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">feeding clarity</div><h2 id="foodPageTitle">Van’s food & feeding</h2></div><span class="dog-chip" id="foodDogChip">Van</span></div>
+        <div class="form-grid three">
+          <div><label>Type</label><select id="foodType"><option>Main meal</option><option>Alternate meal</option><option>Prescription food</option><option>Regular treat</option><option>Chew</option><option>Supplement</option><option>Medication food</option><option>Topper</option><option>Other</option></select></div>
+          <div><label>Brand or item name</label><input id="foodName" placeholder="e.g. Hill’s i/d"></div>
+          <div><label>Amount</label><input id="foodAmount" placeholder="e.g. 1/2 cup"></div>
+          <div><label>Schedule</label><input id="foodSchedule" placeholder="e.g. morning and evening"></div>
+          <div><label>When used</label><input id="foodWhen" placeholder="e.g. pills only"></div>
+          <div><label>Date started</label><input id="foodStart" type="date"></div>
+        </div>
+        <div><label>Note</label><textarea id="foodNote" placeholder="Special instructions or reason for use"></textarea></div>
+        <div class="actions"><button class="primary" id="foodSaveBtn" onclick="saveFood()">Add food item</button><button class="secondary hidden" id="foodCancelBtn" onclick="cancelFoodEdit()">Cancel edit</button></div>
+      </article>
+      <article class="card"><h3 id="activeFoodsTitle">Van’s active foods</h3><div id="foodList" class="entry-list"></div></article>
+    </section>
+
+    <section id="log" class="screen">
+      <article class="card">
+        <div class="section-head"><div><div class="eyebrow">authoritative history</div><h2 id="logPageTitle">Van’s timeline</h2></div><span class="dog-chip" id="logDogChip">Van</span></div>
+        <div class="quick-note">
+          <h3>Add care note</h3>
+          <div class="form-grid two-fields"><div><label>Date</label><input id="noteDate" type="date"></div><div><label>Title</label><input id="noteTitle" placeholder="e.g. Appetite change"></div></div>
+          <div><label>Note</label><textarea id="noteText" placeholder="What changed or what should be remembered?"></textarea></div>
+          <div class="actions"><button class="primary" id="noteSaveBtn" onclick="saveCareNote()">Add care note</button><button class="secondary hidden" id="noteCancelBtn" onclick="cancelCareNoteEdit()">Cancel edit</button></div>
+        </div>
+        <div class="filters" id="logFilters">
+          <button class="active" data-filter="all" onclick="setLogFilter('all',this)">All</button><button data-filter="treatment" onclick="setLogFilter('treatment',this)">Medications</button><button data-filter="feeding" onclick="setLogFilter('feeding',this)">Food</button><button data-filter="weight" onclick="setLogFilter('weight',this)">Weight</button><button data-filter="height" onclick="setLogFilter('height',this)">Height</button><button data-filter="caution" onclick="setLogFilter('caution',this)">Cautions</button><button data-filter="note" onclick="setLogFilter('note',this)">Notes</button>
+        </div>
+        <div id="timelineList"></div>
+      </article>
+    </section>
+
+    <section id="more" class="screen">
+      <div class="more-tabs" id="moreTabs">
+        <button class="active" data-panel="profile" onclick="showMorePanel('profile',this)">Profile</button><button data-panel="measurements" onclick="showMorePanel('measurements',this)">Measurements</button><button data-panel="cautions" onclick="showMorePanel('cautions',this)">Cautions</button><button data-panel="backup" onclick="showMorePanel('backup',this)">Backup & PDF</button>
+      </div>
+
+      <article id="profilePanel" class="card more-panel active">
+        <div class="section-head"><div><div class="eyebrow">identity and contacts</div><h2 id="profileTitle">Van’s profile</h2></div><span class="dog-chip" id="profileDogChip">Van</span></div>
+        <div class="form-grid three">
+          <div><label>Name</label><input id="profileName"></div><div><label>Age</label><input id="profileAge" placeholder="e.g. 15"></div><div><label>Breed</label><input id="profileBreed"></div><div><label>Sex</label><select id="profileSex"><option value="">Not entered</option><option>Male</option><option>Female</option></select></div><div><label>Veterinarian</label><input id="profileVet"></div><div><label>Emergency contact</label><input id="profileEmergency"></div>
+        </div>
+        <div><label>General notes</label><textarea id="profileNotes"></textarea></div>
+        <div class="actions"><button class="primary" onclick="saveProfile()">Save profile</button></div>
+      </article>
+
+      <article id="measurementsPanel" class="card more-panel">
+        <div class="section-head"><div><div class="eyebrow">physical record</div><h2 id="measurementTitle">Van’s measurements</h2></div><span class="dog-chip" id="measurementDogChip">Van</span></div>
+        <div class="segment" id="measurementTabs"><button class="active" onclick="showMeasurementType('weight',this)">Weight</button><button onclick="showMeasurementType('height',this)">Height</button></div>
+        <div id="weightForm" class="measurement-form"><div class="form-grid three"><div><label>Date</label><input id="weightDate" type="date"></div><div><label>Weight</label><input id="weightValue" placeholder="e.g. 18 lb"></div><div><label>Note</label><input id="weightNote" placeholder="Optional"></div></div><div class="actions"><button class="primary" id="weightSaveBtn" onclick="saveMeasurement('weight')">Add weight</button><button class="secondary hidden" id="weightCancelBtn" onclick="cancelMeasurementEdit('weight')">Cancel edit</button></div><div id="weightList" class="entry-list"></div></div>
+        <div id="heightForm" class="measurement-form hidden"><p class="helper">Measure height at the shoulders or withers, not at the top of the head.</p><div class="form-grid three"><div><label>Date</label><input id="heightDate" type="date"></div><div><label>Height at shoulders</label><input id="heightValue" placeholder="e.g. 12 in"></div><div><label>Note</label><input id="heightNote" placeholder="Optional"></div></div><div class="actions"><button class="primary" id="heightSaveBtn" onclick="saveMeasurement('height')">Add height</button><button class="secondary hidden" id="heightCancelBtn" onclick="cancelMeasurementEdit('height')">Cancel edit</button></div><div id="heightList" class="entry-list"></div></div>
+      </article>
+
+      <article id="cautionsPanel" class="card more-panel">
+        <div class="section-head"><div><div class="eyebrow">allergies and warnings</div><h2 id="cautionTitle">Van’s cautions</h2></div><span class="dog-chip" id="cautionDogChip">Van</span></div>
+        <div class="form-grid two-fields"><div><label>Type</label><select id="cautionType"><option>Allergy</option><option>Sensitivity</option><option>Medication reaction</option><option>Food caution</option><option>Handling caution</option><option>Health warning</option></select></div><div><label>Caution</label><input id="cautionText" placeholder="e.g. Chicken sensitivity"></div></div>
+        <div class="actions"><button class="primary" id="cautionSaveBtn" onclick="saveCaution()">Add caution</button><button class="secondary hidden" id="cautionCancelBtn" onclick="cancelCautionEdit()">Cancel edit</button></div>
+        <div id="cautionList" class="entry-list"></div>
+      </article>
+
+      <article id="backupPanel" class="card more-panel">
+        <div class="eyebrow">data protection and sharing</div><h2>Backup, restore & PDF</h2>
+        <p>One JSON backup protects both dogs. PDF reports contain only the selected dog.</p>
+        <div class="actions"><button class="primary" onclick="shareDogPdf()" id="sharePdfBtn">Share Van PDF</button><button class="secondary" onclick="downloadBackup()">Save backup</button><button class="secondary" onclick="document.getElementById('restoreFile').click()">Restore backup</button><input id="restoreFile" class="hidden" type="file" accept=".json,application/json" onchange="restoreBackup(event)"></div>
+        <div class="data-warning">Van and Ginger’s information is stored on this device. Use Save Backup regularly to protect it.</div>
+        <div class="danger-zone"><h3>Erase all app data</h3><p>This removes both dogs’ records from this device.</p><button class="danger" onclick="eraseAllData()">Erase Van & Ginger data</button></div>
+      </article>
+    </section>
+  </main>
+
+  <footer>Private device-local care tracker. Not a substitute for veterinary advice.</footer>
+</div>
+
+<nav class="bottom-nav">
+  <button class="nav active" data-screen="home" onclick="showScreen('home',this)"><span class="nav-icon">⌂</span><span>Home</span></button>
+  <button class="nav" data-screen="medications" onclick="showScreen('medications',this)"><span class="nav-icon">Rx</span><span>Medications</span></button>
+  <button class="nav" data-screen="food" onclick="showScreen('food',this)"><span class="nav-icon">◒</span><span>Food</span></button>
+  <button class="nav" data-screen="log" onclick="showScreen('log',this)"><span class="nav-icon">≡</span><span>Log</span></button>
+  <button class="nav" data-screen="more" onclick="showScreen('more',this)"><span class="nav-icon">•••</span><span>More</span></button>
+</nav>
+<script src="app.js?v=1" defer></script>
+</body>
+</html>
