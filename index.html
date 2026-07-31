@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Van & Ginger">
 <title>Van & Ginger Senior Care</title>
-<link rel="stylesheet" href="styles.css?v=6">
+<link rel="stylesheet" href="styles-v7.css">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <script>
@@ -19,6 +19,16 @@
   document.documentElement.classList.add(isiOS&&!standalone?"install-required":"install-cleared");
 })();
 </script>
+
+<style id="criticalSplashV7">
+#splashScreen{position:fixed;z-index:2147483000;inset:0;display:flex;align-items:center;justify-content:center;overflow:auto;background:#efe8df;padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom))}
+#splashScreen.hide{display:none!important}
+#splashScreen .splash-card{width:min(92vw,470px);display:flex;flex-direction:column;align-items:center;gap:12px}
+#splashScreen .splash-art{display:block;width:100%;height:auto;max-height:calc(100dvh - 112px);object-fit:contain;border-radius:28px}
+#splashScreen .splash-tagline{font-weight:900;letter-spacing:.12em;text-transform:lowercase;color:#596164}
+#splashScreen .splash-btn{border:0;border-radius:999px;padding:12px 20px;background:#596164;color:#f4efe6;font-weight:900}
+html.install-required #splashScreen{display:none!important}
+</style>
 </head>
 <body>
 <div class="install-curtain" role="dialog" aria-modal="true" aria-labelledby="installTitle">
@@ -36,9 +46,9 @@
 </div>
 <div id="splashScreen" class="splash" aria-hidden="false">
   <div class="splash-card">
-    <img class="splash-art" src="assets/van-ginger-splash.webp" alt="Van and Ginger in interlocking heart frames">
+    <img class="splash-art" src="assets/van-ginger-splash-v7.webp" alt="Van and Ginger in interlocking heart frames">
     <div class="splash-tagline">tender loving care</div>
-    <button class="primary splash-btn" type="button" onclick="dismissSplash()">Open care app</button>
+    <button class="primary splash-btn" type="button" onclick="document.getElementById('splashScreen').classList.add('hide')">Open care app</button>
   </div>
 </div>
 
@@ -184,6 +194,6 @@
   <button class="nav" data-screen="log" onclick="showScreen('log',this)"><span class="nav-icon">≡</span><span>Log</span></button>
   <button class="nav" data-screen="more" onclick="showScreen('more',this)"><span class="nav-icon">•••</span><span>More</span></button>
 </nav>
-<script src="app.js?v=6" defer></script>
+<script src="app-v7.js" defer></script>
 </body>
 </html>
