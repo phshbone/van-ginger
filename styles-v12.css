@@ -111,21 +111,3 @@ html.install-required #splashScreen{display:none!important}
   padding:8px 6px;
   font-size:.78rem;
 }
-
-/* Center the final Notes filter for a balanced 3-3-1 layout */
-#logFilters.filters{
-  grid-template-columns:repeat(3,minmax(0,1fr));
-}
-#logFilters.filters button:nth-child(7){
-  grid-column:2;
-}
-@media(max-width:340px){
-  #logFilters.filters{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-  #logFilters.filters button:nth-child(7){
-    grid-column:1 / -1;
-    width:calc(50% - 4px);
-    justify-self:center;
-  }
-}
