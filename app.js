@@ -17,7 +17,12 @@ function dog(){return state.dogs[state.activeDogId]}
 function dogName(){return dog().profile.name||dogMeta[state.activeDogId].name}
 function persist(){return Store.save(state)}
 function addHistory(type,title,detail="",date=todayISO(),sourceId=""){dog().history.unshift({id:uid(),type,title,detail,date,createdAt:new Date().toISOString(),sourceId})}
-function setTheme(){const meta=dogMeta[state.activeDogId];document.documentElement.style.setProperty("--active",meta.accent);document.documentElement.style.setProperty("--active-soft",meta.soft)}
+function setTheme(){
+  const meta=dogMeta[state.activeDogId];
+  document.documentElement.style.setProperty("--active",meta.accent);
+  document.documentElement.style.setProperty("--active-soft",meta.soft);
+  document.documentElement.dataset.activeDog=state.activeDogId;
+}
 function setTodayDefaults(){["treatmentStart","foodStart","noteDate","weightDate","heightDate"].forEach(id=>{if($(id)&&!$(id).value)$(id).value=todayISO()})}
 function switchDog(id){if(!state.dogs[id])return;state.activeDogId=id;cancelAllEdits();persist();renderAll();document.querySelector(".app-shell").scrollTop=0}
 function showScreen(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id)?.classList.add("active");document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.screen===id));document.querySelector(".app-shell").scrollTop=0;if(id==="more"&&!document.querySelector(".more-panel.active"))showMorePanel("profile")}
