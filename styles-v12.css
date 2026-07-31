@@ -92,3 +92,22 @@ html.install-required .splash{display:none!important}
 #splashScreen .splash-card{width:min(92vw,470px)!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:12px!important}
 #splashScreen .splash-art{display:block!important;width:100%!important;height:auto!important;max-height:calc(100dvh - 112px)!important;object-fit:contain!important;border-radius:28px!important}
 html.install-required #splashScreen{display:none!important}
+
+/* Log filters: show all categories without horizontal scrolling */
+#logFilters.filters{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:8px;
+  overflow:visible;
+  padding-bottom:4px;
+}
+#logFilters.filters button{
+  width:100%;
+  min-width:0;
+  min-height:42px;
+  white-space:normal;
+  text-align:center;
+  line-height:1.15;
+  padding:8px 6px;
+  font-size:.78rem;
+}
