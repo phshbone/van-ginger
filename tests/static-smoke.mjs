@@ -29,6 +29,7 @@ assert(app.includes("function endSitterMode"),"end sitter function missing");
 assert(app.includes("function sitterSectionsForDog"),"two-dog sitter section builder missing");
 assert(!/Frannie|training/i.test(html+app),"Frannie/training content leaked into Van & Ginger v14");
 assert(css.includes(".sitter-modal"),"sitter modal styles missing");
+assert(css.includes("--ios-footer-fill")&&css.includes("bottom:calc(0px - var(--ios-footer-fill))"),"mobile footer safe-area anchor missing");
 assert(sw.includes("van-ginger-senior-care-v14"),"service worker cache name is not v14");
 for(const ref of ["./styles-v14.css","./app-v14.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
   assert(sw.includes(ref),"service worker shell missing "+ref);
