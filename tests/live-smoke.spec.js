@@ -92,3 +92,21 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
 
   expect(pageErrors).toEqual([]);
 });
+
+
+test("phone footer background extends through bottom safe area", async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.includes("phone"),"mobile-only safe-area check");
+
+  await page.goto("index.html");
+  await page.getByRole("button",{name:"Open care app"}).click();
+
+  const metrics=await page.locator(".bottom-nav").evaluate(el=>{
+    const rect=el.getBoundingClientRect();
+    return {bottom:rect.bottom,height:rect.height,viewport:window.innerHeight};
+  });
+
+  expect(metrics.bottom).toBeGreaterThan(metrics.viewport+30);
+  await expect(page.locator('.nav[data-screen="more"]')).toBeVisible();
+  await page.locator('.nav[data-screen="more"]').click();
+  await expect(page.locator("#more")).toHaveClass(/active/);
+});
