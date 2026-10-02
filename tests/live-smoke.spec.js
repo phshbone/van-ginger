@@ -93,7 +93,7 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
   expect(pageErrors).toEqual([]);
 });
 
-test("phone uses structural bottom row with scrollable app shell", async ({ page }, testInfo) => {
+test("phone uses compact structural tab bar with matching root canvas", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.includes("phone"),"mobile-only footer check");
 
   await page.goto("index.html");
@@ -117,6 +117,9 @@ test("phone uses structural bottom row with scrollable app shell", async ({ page
       navTop:navRect.top,
       navBottom:navRect.bottom,
       navTopBefore:navRect.top,
+      navHeight:navRect.height,
+      rootBackground:getComputedStyle(document.documentElement).backgroundColor,
+      navBackground:navStyle.backgroundColor,
       scrollHeight:shell.scrollHeight,
       clientHeight:shell.clientHeight
     };
@@ -127,6 +130,8 @@ test("phone uses structural bottom row with scrollable app shell", async ({ page
   expect(before.navPosition).toBe("relative");
   expect(Math.abs(before.shellBottom-before.navTop)).toBeLessThan(2);
   expect(Math.abs(before.navBottom-before.viewport)).toBeLessThan(2);
+  expect(before.navHeight).toBeLessThanOrEqual(70);
+  expect(before.rootBackground).toBe(before.navBackground);
   expect(before.scrollHeight).toBeGreaterThan(before.clientHeight);
 
   await page.locator(".app-shell").evaluate(el=>{el.scrollTop=500});
