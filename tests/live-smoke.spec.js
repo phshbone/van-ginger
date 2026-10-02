@@ -4,7 +4,7 @@ test("two-dog sitter lifecycle persists across reload", async ({ page }) => {
   const pageErrors=[];
   page.on("pageerror",error=>pageErrors.push(error.message));
 
-  await page.goto("/index.html");
+  await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
 
   await page.getByRole("button",{name:"More"}).click();
