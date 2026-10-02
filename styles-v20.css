@@ -192,15 +192,17 @@ html.install-required #splashScreen{display:none!important}
    with a compact tab bar. */
 
 
-/* v20 — WebKit installed-PWA viewport correction
-   WebKit can report 100dvh minus the bottom safe area in Home Screen apps.
-   Expand the whole app grid by that inset; keep the inset as footer padding. */
+/* iOS 26 installed-PWA chin correction
+   With black-translucent + viewport-fit=cover, 100dvh can stop above the
+   physical bottom edge. Use 100vh for the root canvas and keep the tab bar
+   compact instead of adding safe-area height inside the footer. */
 @media (display-mode: standalone) and (max-width:719px){
+  html,
   body{
-    height:calc(100dvh + env(safe-area-inset-bottom));
-    min-height:calc(100dvh + env(safe-area-inset-bottom));
+    height:100vh;
+    min-height:100vh;
   }
   .bottom-nav{
-    padding:5px 7px calc(6px + env(safe-area-inset-bottom));
+    padding:5px 7px 6px;
   }
 }
