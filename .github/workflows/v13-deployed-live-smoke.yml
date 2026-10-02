@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      BASE_URL: https://phshbone.github.io/van-ginger
+      BASE_URL: https://phshbone.github.io/van-ginger/
     steps:
       - name: Checkout deployed revision
         uses: actions/checkout@v4
