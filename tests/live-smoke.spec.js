@@ -93,7 +93,7 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
   expect(pageErrors).toEqual([]);
 });
 
-test("phone uses compact structural tab bar with matching root canvas", async ({ page }, testInfo) => {
+test("phone keeps structural tab bar and scroll behavior outside standalone mode", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.includes("phone"),"mobile-only footer check");
 
   await page.goto("index.html");
