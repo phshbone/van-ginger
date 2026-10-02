@@ -100,17 +100,21 @@ test("phone footer anchors to viewport with dark underfill and larger controls",
   await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
 
+  await page.locator('.dog-tab[data-dog="ginger"]').click();
+
   const metrics=await page.evaluate(()=>{
     const el=document.querySelector(".bottom-nav");
     const nav=el.querySelector(".nav");
     const icon=el.querySelector(".nav-icon");
     const rect=el.getBoundingClientRect();
     const root=getComputedStyle(document.documentElement);
+    const body=getComputedStyle(document.body);
     const after=getComputedStyle(el,"::after");
     return {
       bottom:rect.bottom,
       viewport:window.innerHeight,
       rootBackground:root.backgroundColor,
+      bodyBackground:body.backgroundColor,
       underfillHeight:parseFloat(after.height),
       underfillBackground:after.backgroundColor,
       navFont:parseFloat(getComputedStyle(nav).fontSize),
@@ -121,6 +125,7 @@ test("phone footer anchors to viewport with dark underfill and larger controls",
   expect(Math.abs(metrics.bottom-metrics.viewport)).toBeLessThan(2);
   expect(metrics.underfillHeight).toBeGreaterThanOrEqual(139);
   expect(metrics.rootBackground).toBe(metrics.underfillBackground);
+  expect(metrics.bodyBackground).toBe(metrics.underfillBackground);
   expect(metrics.navFont).toBeGreaterThanOrEqual(12);
   expect(metrics.iconFont).toBeGreaterThanOrEqual(20);
   await expect(page.locator('.nav[data-screen="more"]')).toBeVisible();
