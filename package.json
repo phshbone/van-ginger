@@ -1,9 +1,9 @@
 {
   "name": "van-ginger-senior-care",
   "private": true,
-  "version": "15.0.0",
+  "version": "16.0.0",
   "scripts": {
-    "test:static": "node --check app-v15.js && node --check sw-v15.js && node tests/static-smoke.mjs",
+    "test:static": "node --check app-v16.js && node --check sw-v16.js && node tests/static-smoke.mjs",
     "test:live": "playwright test"
   },
   "devDependencies": {
