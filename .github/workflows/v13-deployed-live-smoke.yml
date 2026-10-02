@@ -1,0 +1,57 @@
+name: Van & Ginger Deployed Live Smoke
+
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deployed-live-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: https://phshbone.github.io/van-ginger
+    steps:
+      - name: Checkout deployed revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install test dependencies
+        run: npm install
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Confirm deployed v13 shell
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          url="https://phshbone.github.io/van-ginger/index.html"
+          body=urllib.request.urlopen(url, timeout=20).read().decode("utf-8")
+          assert "app-v13.js" in body, "deployed page is not serving app-v13.js"
+          assert "styles-v13.css" in body, "deployed page is not serving styles-v13.css"
+          assert 'id="sitterPanel"' in body, "deployed sitter panel missing"
+          print("DEPLOYED SHELL PASS:", url)
+          PY
+
+      - name: Run deployed Live Smoke
+        run: npm run test:live
+
+      - name: Upload deployed smoke report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: van-ginger-deployed-live-smoke-report
+          path: playwright-report
+          if-no-files-found: ignore
