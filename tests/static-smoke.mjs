@@ -2,15 +2,15 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const html=fs.readFileSync("index.html","utf8");
-const app=fs.readFileSync("app-v19.js","utf8");
-const css=fs.readFileSync("styles-v19.css","utf8");
-const sw=fs.readFileSync("sw-v19.js","utf8");
+const app=fs.readFileSync("app-v20.js","utf8");
+const css=fs.readFileSync("styles-v20.css","utf8");
+const sw=fs.readFileSync("sw-v20.js","utf8");
 const manifest=JSON.parse(fs.readFileSync("manifest.json","utf8"));
 
 function assert(condition,message){if(!condition)throw new Error(message)}
 
-assert(html.includes('styles-v19.css'),"index must load styles-v19.css");
-assert(html.includes('app-v19.js'),"index must load app-v19.js");
+assert(html.includes('styles-v20.css'),"index must load styles-v20.css");
+assert(html.includes('app-v20.js'),"index must load app-v20.js");
 assert(html.includes('viewport-fit=cover'),"viewport-fit=cover missing");
 assert(html.includes('id="sitterPanel"'),"sitter setup panel missing");
 assert(html.includes('id="sitterModal"'),"sitter modal missing");
@@ -29,7 +29,9 @@ assert(css.includes("display:grid;grid-template-rows:minmax(0,1fr) auto"),"body 
 assert(css.includes(".app-shell{position:relative;inset:auto;min-height:0;height:auto;overflow-y:auto"),"app shell must be the scroll container");
 assert(css.includes(".bottom-nav{position:relative;")&&css.includes("align-self:end"),"bottom nav must be structural, not fixed");
 const navCss=css.slice(css.indexOf(".bottom-nav{"),css.indexOf("}.nav{",css.indexOf(".bottom-nav{"))+1);
-assert(!navCss.includes("safe-area-inset-bottom"),"footer must not double-count iOS bottom safe area");
+assert(css.includes("@media (display-mode: standalone) and (max-width:719px)"),"standalone PWA viewport correction missing");
+assert(css.includes("height:calc(100dvh + env(safe-area-inset-bottom))"),"standalone shell must add the missing bottom safe area to 100dvh");
+assert(css.includes("padding:5px 7px calc(6px + env(safe-area-inset-bottom))"),"standalone footer must keep safe-area padding inside the footer");
 assert(css.includes("html{background-color:var(--header-main)!important}"),"iOS root canvas must match footer color");
 assert(css.includes(".bottom-nav{")&&css.includes("background:var(--header-main);"),"mobile footer must use solid root-matching color");
 assert(css.includes("min-height:50px"),"mobile footer controls should be compact");
@@ -40,8 +42,8 @@ assert(!css.includes("bottom:calc(-1 *"),"negative footer offset still present")
 assert(css.includes("font-size:.74rem")&&css.includes("font-size:1.18rem"),"compact readable nav typography missing");
 
 assert(manifest.background_color==="#403b38","PWA fallback background should remain dark");
-assert(sw.includes("van-ginger-senior-care-v19"),"service worker cache name is not v19");
-for(const ref of ["./styles-v19.css","./app-v19.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
+assert(sw.includes("van-ginger-senior-care-v20"),"service worker cache name is not v20");
+for(const ref of ["./styles-v20.css","./app-v20.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
   assert(sw.includes(ref),"service worker shell missing "+ref);
 }
 
@@ -66,4 +68,4 @@ assert(migrated.dogs.ginger.feedingItems[0].name==="Ginger Food","migration lost
 assert(migrated.dogs.van.sitter&&migrated.dogs.ginger.sitter,"migration must add sitter drafts");
 assert(migrated.sitterSession&&migrated.sitterSession.active===false,"migration must add inactive sitter session");
 
-console.log("STATIC SMOKE PASS: v19 compact iOS tab bar, legacy footer hacks removed, care data compatibility preserved.");
+console.log("STATIC SMOKE PASS: v20 WebKit standalone viewport correction present; existing care behavior preserved.");
