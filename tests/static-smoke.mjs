@@ -2,14 +2,14 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const html=fs.readFileSync("index.html","utf8");
-const app=fs.readFileSync("app-v14.js","utf8");
-const css=fs.readFileSync("styles-v14.css","utf8");
-const sw=fs.readFileSync("sw-v14.js","utf8");
+const app=fs.readFileSync("app-v15.js","utf8");
+const css=fs.readFileSync("styles-v15.css","utf8");
+const sw=fs.readFileSync("sw-v15.js","utf8");
 
 function assert(condition,message){if(!condition)throw new Error(message)}
 
-assert(html.includes('styles-v14.css'),"index must load styles-v14.css");
-assert(html.includes('app-v14.js'),"index must load app-v14.js");
+assert(html.includes('styles-v15.css'),"index must load styles-v15.css");
+assert(html.includes('app-v15.js'),"index must load app-v15.js");
 assert(html.includes('id="sitterPanel"'),"sitter setup panel missing");
 assert(html.includes('id="sitterModal"'),"sitter modal missing");
 assert(html.includes('id="sitterEntryAlert"'),"sitter reopen alert missing");
@@ -29,9 +29,11 @@ assert(app.includes("function endSitterMode"),"end sitter function missing");
 assert(app.includes("function sitterSectionsForDog"),"two-dog sitter section builder missing");
 assert(!/Frannie|training/i.test(html+app),"Frannie/training content leaked into Van & Ginger v14");
 assert(css.includes(".sitter-modal"),"sitter modal styles missing");
-assert(css.includes("--ios-footer-fill")&&css.includes("bottom:calc(0px - var(--ios-footer-fill))"),"mobile footer safe-area anchor missing");
-assert(sw.includes("van-ginger-senior-care-v14"),"service worker cache name is not v14");
-for(const ref of ["./styles-v14.css","./app-v14.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
+assert(css.includes("html{")||css.includes("html{\n")||css.includes("html{\r\n")||css.includes("html{"),"mobile root fallback missing");
+assert(css.includes(".bottom-nav::after")&&css.includes("height:140px"),"mobile footer underfill missing");
+assert(css.includes("font-size:.78rem")&&css.includes("font-size:1.28rem"),"larger mobile nav typography missing");
+assert(sw.includes("van-ginger-senior-care-v15"),"service worker cache name is not v15");
+for(const ref of ["./styles-v15.css","./app-v15.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
   assert(sw.includes(ref),"service worker shell missing "+ref);
 }
 
@@ -56,4 +58,4 @@ assert(migrated.dogs.ginger.feedingItems[0].name==="Ginger Food","migration lost
 assert(migrated.dogs.van.sitter&&migrated.dogs.ginger.sitter,"migration must add sitter drafts");
 assert(migrated.sitterSession&&migrated.sitterSession.active===false,"migration must add inactive sitter session");
 
-console.log("STATIC SMOKE PASS: v14 references, sitter structure, cache shell, and v12→v13 migration verified.");
+console.log("STATIC SMOKE PASS: v15 references, sitter structure, cache shell, and v12→v13 migration verified.");

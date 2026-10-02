@@ -33,14 +33,14 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Confirm deployed v14 shell
+      - name: Confirm deployed v15 shell
         run: |
           python3 - <<'PY'
           import urllib.request
           url="https://phshbone.github.io/van-ginger/index.html"
           body=urllib.request.urlopen(url, timeout=20).read().decode("utf-8")
-          assert "app-v14.js" in body, "deployed page is not serving app-v14.js"
-          assert "styles-v14.css" in body, "deployed page is not serving styles-v14.css"
+          assert "app-v15.js" in body, "deployed page is not serving app-v15.js"
+          assert "styles-v15.css" in body, "deployed page is not serving styles-v15.css"
           assert 'id="sitterPanel"' in body, "deployed sitter panel missing"
           print("DEPLOYED SHELL PASS:", url)
           PY

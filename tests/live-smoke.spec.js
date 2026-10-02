@@ -94,18 +94,35 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
 });
 
 
-test("phone footer background extends through bottom safe area", async ({ page }, testInfo) => {
-  test.skip(!testInfo.project.name.includes("phone"),"mobile-only safe-area check");
+test("phone footer anchors to viewport with dark underfill and larger controls", async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.includes("phone"),"mobile-only footer check");
 
   await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
 
-  const metrics=await page.locator(".bottom-nav").evaluate(el=>{
+  const metrics=await page.evaluate(()=>{
+    const el=document.querySelector(".bottom-nav");
+    const nav=el.querySelector(".nav");
+    const icon=el.querySelector(".nav-icon");
     const rect=el.getBoundingClientRect();
-    return {bottom:rect.bottom,height:rect.height,viewport:window.innerHeight};
+    const root=getComputedStyle(document.documentElement);
+    const after=getComputedStyle(el,"::after");
+    return {
+      bottom:rect.bottom,
+      viewport:window.innerHeight,
+      rootBackground:root.backgroundColor,
+      underfillHeight:parseFloat(after.height),
+      underfillBackground:after.backgroundColor,
+      navFont:parseFloat(getComputedStyle(nav).fontSize),
+      iconFont:parseFloat(getComputedStyle(icon).fontSize)
+    };
   });
 
-  expect(metrics.bottom).toBeGreaterThan(metrics.viewport+30);
+  expect(Math.abs(metrics.bottom-metrics.viewport)).toBeLessThan(2);
+  expect(metrics.underfillHeight).toBeGreaterThanOrEqual(139);
+  expect(metrics.rootBackground).toBe(metrics.underfillBackground);
+  expect(metrics.navFont).toBeGreaterThanOrEqual(12);
+  expect(metrics.iconFont).toBeGreaterThanOrEqual(20);
   await expect(page.locator('.nav[data-screen="more"]')).toBeVisible();
   await page.locator('.nav[data-screen="more"]').click();
   await expect(page.locator("#more")).toHaveClass(/active/);
