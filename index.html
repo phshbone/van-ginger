@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Van & Ginger">
 <title>Van & Ginger Senior Care</title>
-<link rel="stylesheet" href="styles-v12.css">
+<link rel="stylesheet" href="styles-v13.css">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <script>
@@ -47,7 +47,7 @@ html.install-required #splashScreen{display:none!important}
 <div id="splashScreen" class="splash" aria-hidden="false">
   <div class="splash-card">
     <img class="splash-art" src="assets/van-ginger-splash-v11.webp" alt="Van and Ginger in interlocking heart frames">
-    <button class="primary splash-btn" type="button" onclick="document.getElementById('splashScreen').classList.add('hide')">Open care app</button>
+    <button class="primary splash-btn" type="button" onclick="dismissSplash()">Open care app</button>
   </div>
 </div>
 
@@ -68,6 +68,11 @@ html.install-required #splashScreen{display:none!important}
 
   <main>
     <section id="home" class="screen active">
+      <button id="sitterActiveBanner" class="sitter-active-banner hidden" type="button" onclick="openSitter()">
+        <span class="sitter-paw" aria-hidden="true">🐾</span>
+        <span><strong>SITTER MODE ACTIVE</strong><small id="sitterActiveMeta">Tap to view Van & Ginger’s current directions</small></span>
+        <span class="sitter-paw" aria-hidden="true">🐾</span>
+      </button>
       <div class="dog-banner">
         <div class="avatar" id="homeAvatar">V</div>
         <div><div class="eyebrow" id="homeEyebrow">Van’s care overview</div><h2 id="homeDogName">Van</h2><p id="homeProfileLine">Add age and breed in the profile.</p></div>
@@ -147,7 +152,7 @@ html.install-required #splashScreen{display:none!important}
 
     <section id="more" class="screen">
       <div class="more-tabs" id="moreTabs">
-        <button class="active" data-panel="profile" onclick="showMorePanel('profile',this)">Profile</button><button data-panel="measurements" onclick="showMorePanel('measurements',this)">Measurements</button><button data-panel="cautions" onclick="showMorePanel('cautions',this)">Cautions</button><button data-panel="backup" onclick="showMorePanel('backup',this)">Backup & PDF</button>
+        <button class="active" data-panel="profile" onclick="showMorePanel('profile',this)">Profile</button><button data-panel="measurements" onclick="showMorePanel('measurements',this)">Measurements</button><button data-panel="cautions" onclick="showMorePanel('cautions',this)">Cautions</button><button data-panel="sitter" onclick="showMorePanel('sitter',this)">Sitter</button><button data-panel="backup" onclick="showMorePanel('backup',this)">Backup & PDF</button>
       </div>
 
       <article id="profilePanel" class="card more-panel active">
@@ -173,6 +178,25 @@ html.install-required #splashScreen{display:none!important}
         <div id="cautionList" class="entry-list"></div>
       </article>
 
+      <article id="sitterPanel" class="card more-panel">
+        <div class="section-head"><div><div class="eyebrow">caretaker reference</div><h2 id="sitterSetupTitle">Van’s sitter instructions</h2></div><span class="dog-chip" id="sitterDogChip">Van</span></div>
+        <p>These directions are saved separately for Van and Ginger. Current medications, food, cautions, contacts, and recent care notes are pulled into Sitter Mode automatically.</p>
+        <div class="form-grid two-fields">
+          <div><label>Potty / outside routine</label><textarea id="sitterPotty" placeholder="Walk schedule, yard routine, leash instructions…"></textarea></div>
+          <div><label>Crate / sleep routine</label><textarea id="sitterSleep" placeholder="Bedtime, sleeping spot, overnight routine…"></textarea></div>
+          <div><label>Emergency & vet information</label><textarea id="sitterEmergency" placeholder="What to do, who to call, preferred emergency vet…"></textarea></div>
+          <div><label>Other sitter instructions</label><textarea id="sitterInstructions" placeholder="Anything a sitter should know for this dog…"></textarea></div>
+        </div>
+        <div id="sitterSaved" class="save-confirm hidden">✓ Sitter instructions saved.</div>
+        <div class="actions">
+          <button class="primary" type="button" onclick="saveSitterInstructions()">Save instructions</button>
+          <button id="activateSitterBtn" class="secondary" type="button" onclick="activateSitterMode()">Activate Sitter Mode</button>
+          <button id="endSitterBtn" class="danger hidden" type="button" onclick="endSitterMode()">End Sitter Mode</button>
+          <button class="secondary" type="button" onclick="openSitter()">Preview sitter view</button>
+        </div>
+        <div id="sitterStatus" class="data-warning sitter-status">Sitter Mode is off. Saved instructions remain available.</div>
+      </article>
+
       <article id="backupPanel" class="card more-panel">
         <div class="eyebrow">data protection and sharing</div><h2>Backup, restore & PDF</h2>
         <p>One JSON backup protects both dogs. PDF reports contain only the selected dog.</p>
@@ -186,6 +210,36 @@ html.install-required #splashScreen{display:none!important}
   <footer>Private device-local care tracker. Not a substitute for veterinary advice.</footer>
 </div>
 
+
+<div id="sitterEntryAlert" class="sitter-overlay" role="dialog" aria-modal="true" aria-labelledby="sitterEntryTitle">
+  <div class="sitter-entry-card">
+    <div class="eyebrow">caretaker mode</div>
+    <h2 id="sitterEntryTitle">Sitter Mode is active</h2>
+    <p id="sitterEntryAlertMeta">Van & Ginger’s current care directions are ready.</p>
+    <div class="actions">
+      <button class="primary" type="button" onclick="continueToSitter()">View instructions</button>
+      <button class="secondary" type="button" onclick="dismissSitterEntryAlert()">Not now</button>
+    </div>
+  </div>
+</div>
+
+<div id="sitterModal" class="sitter-overlay sitter-modal" role="dialog" aria-modal="true" aria-labelledby="sitterModalTitle">
+  <div class="sitter-modal-box">
+    <div class="sitter-modal-head">
+      <div><div class="eyebrow">current caretaker reference</div><h2 id="sitterModalTitle">Van & Ginger Sitter</h2></div>
+      <button class="secondary compact-button" type="button" onclick="closeSitter()">Close</button>
+    </div>
+    <label class="sitter-checklist-toggle"><input id="sitterChecklistToggle" type="checkbox" onchange="renderSitterView()"> <span><strong>Checklist mode</strong><small>Check items off during this sitter session.</small></span></label>
+    <div id="sitterViewContent" class="sitter-modal-body"></div>
+    <div class="sitter-modal-actions">
+      <button class="secondary" type="button" onclick="shareSitter()">Share</button>
+      <button class="secondary" type="button" onclick="printSitter()">Print / PDF</button>
+      <button id="sitterModalEndBtn" class="danger hidden" type="button" onclick="endSitterMode()">End Sitter Mode</button>
+    </div>
+  </div>
+</div>
+<div id="sitterPrintReport" class="sitter-print-report" aria-hidden="true"></div>
+
 <nav class="bottom-nav">
   <button class="nav active" data-screen="home" onclick="showScreen('home',this)"><span class="nav-icon">⌂</span><span>Home</span></button>
   <button class="nav" data-screen="medications" onclick="showScreen('medications',this)"><span class="nav-icon">Rx</span><span>Medications</span></button>
@@ -193,6 +247,6 @@ html.install-required #splashScreen{display:none!important}
   <button class="nav" data-screen="log" onclick="showScreen('log',this)"><span class="nav-icon">≡</span><span>Log</span></button>
   <button class="nav" data-screen="more" onclick="showScreen('more',this)"><span class="nav-icon">•••</span><span>More</span></button>
 </nav>
-<script src="app-v12.js" defer></script>
+<script src="app-v13.js" defer></script>
 </body>
 </html>
