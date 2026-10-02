@@ -46,3 +46,49 @@ test("two-dog sitter lifecycle persists across reload", async ({ page }) => {
 
   expect(pageErrors).toEqual([]);
 });
+
+
+test("guided medication entry uses presets, AM/PM timing, and native time fields", async ({ page }) => {
+  const pageErrors=[];
+  page.on("pageerror",error=>pageErrors.push(error.message));
+
+  await page.goto("index.html");
+  await page.getByRole("button",{name:"Open care app"}).click();
+  await page.locator('.nav[data-screen="medications"]').click();
+
+  await page.locator("#treatmentName").fill("Test Medicine");
+  await page.locator("#treatmentDosage").fill("1 tablet");
+  await page.locator("#treatmentFrequencyChoice").selectOption({label:"Once daily"});
+  await page.locator("#treatmentDaypartChoice").selectOption({label:"Evening (PM)"});
+  await page.locator("#treatmentExactTime").fill("19:00");
+  await page.locator("#treatmentDue").fill("2026-10-03");
+  await page.locator("#treatmentDueTime").fill("19:00");
+  await page.locator("#treatmentInstructions").fill("Give with food.");
+  await page.getByRole("button",{name:"Add medication or treatment"}).click();
+
+  const card=page.locator(".medication-entry").first();
+  await expect(card).toContainText("Test Medicine");
+  await expect(card).toContainText("Dosage");
+  await expect(card).toContainText("1 tablet");
+  await expect(card).toContainText("Once daily");
+  await expect(card).toContainText("Evening · 7:00 PM");
+  await expect(card).toContainText("Next due");
+  await expect(card).toContainText("7:00 PM");
+  await expect(card).toContainText("Give with food.");
+
+  await card.getByRole("button",{name:"Edit"}).click();
+  await page.locator("#treatmentFrequencyChoice").selectOption({label:"Other"});
+  await expect(page.locator("#treatmentFrequencyOtherWrap")).not.toHaveClass(/hidden/);
+  await page.locator("#treatmentFrequencyOther").fill("Every 36 hours");
+  await page.getByRole("button",{name:"Save changes"}).click();
+  await expect(page.locator(".medication-entry").first()).toContainText("Every 36 hours");
+
+  await page.getByRole("button",{name:"More"}).click();
+  await page.getByRole("button",{name:"Sitter",exact:true}).click();
+  await page.getByRole("button",{name:"Preview sitter view"}).click();
+  await expect(page.locator("#sitterViewContent")).toContainText("Test Medicine");
+  await expect(page.locator("#sitterViewContent")).toContainText("Evening · 7:00 PM");
+  await expect(page.locator("#sitterViewContent")).toContainText("Next due");
+
+  expect(pageErrors).toEqual([]);
+});

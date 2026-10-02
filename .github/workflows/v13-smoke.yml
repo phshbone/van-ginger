@@ -1,4 +1,4 @@
-name: Van & Ginger v13 Smoke Test
+name: Van & Ginger v14 Smoke Test
 
 on:
   pull_request:
@@ -37,6 +37,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: van-ginger-v13-playwright-report
+          name: van-ginger-v14-playwright-report
           path: playwright-report
           if-no-files-found: ignore
