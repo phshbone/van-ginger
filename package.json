@@ -1,0 +1,12 @@
+{
+  "name": "van-ginger-senior-care",
+  "private": true,
+  "version": "13.0.0",
+  "scripts": {
+    "test:static": "node --check app-v13.js && node --check sw-v13.js && node tests/static-smoke.mjs",
+    "test:live": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.0"
+  }
+}
