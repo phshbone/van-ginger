@@ -2,14 +2,14 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const html=fs.readFileSync("index.html","utf8");
-const app=fs.readFileSync("app-v15.js","utf8");
-const css=fs.readFileSync("styles-v15.css","utf8");
-const sw=fs.readFileSync("sw-v15.js","utf8");
+const app=fs.readFileSync("app-v16.js","utf8");
+const css=fs.readFileSync("styles-v16.css","utf8");
+const sw=fs.readFileSync("sw-v16.js","utf8");
 
 function assert(condition,message){if(!condition)throw new Error(message)}
 
-assert(html.includes('styles-v15.css'),"index must load styles-v15.css");
-assert(html.includes('app-v15.js'),"index must load app-v15.js");
+assert(html.includes('styles-v16.css'),"index must load styles-v16.css");
+assert(html.includes('app-v16.js'),"index must load app-v16.js");
 assert(html.includes('id="sitterPanel"'),"sitter setup panel missing");
 assert(html.includes('id="sitterModal"'),"sitter modal missing");
 assert(html.includes('id="sitterEntryAlert"'),"sitter reopen alert missing");
@@ -31,9 +31,12 @@ assert(!/Frannie|training/i.test(html+app),"Frannie/training content leaked into
 assert(css.includes(".sitter-modal"),"sitter modal styles missing");
 assert(css.includes("html{")||css.includes("html{\n")||css.includes("html{\r\n")||css.includes("html{"),"mobile root fallback missing");
 assert(css.includes(".bottom-nav::after")&&css.includes("height:140px"),"mobile footer underfill missing");
+assert(css.includes("html,body")&&css.includes("background-color:var(--header-main)!important"),"mobile body/root dark fallback missing");
+const manifest=JSON.parse(fs.readFileSync("manifest.json","utf8"));
+assert(manifest.background_color==="#403b38","manifest PWA background must be dark");
 assert(css.includes("font-size:.78rem")&&css.includes("font-size:1.28rem"),"larger mobile nav typography missing");
-assert(sw.includes("van-ginger-senior-care-v15"),"service worker cache name is not v15");
-for(const ref of ["./styles-v15.css","./app-v15.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
+assert(sw.includes("van-ginger-senior-care-v16"),"service worker cache name is not v16");
+for(const ref of ["./styles-v16.css","./app-v16.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
   assert(sw.includes(ref),"service worker shell missing "+ref);
 }
 
@@ -58,4 +61,4 @@ assert(migrated.dogs.ginger.feedingItems[0].name==="Ginger Food","migration lost
 assert(migrated.dogs.van.sitter&&migrated.dogs.ginger.sitter,"migration must add sitter drafts");
 assert(migrated.sitterSession&&migrated.sitterSession.active===false,"migration must add inactive sitter session");
 
-console.log("STATIC SMOKE PASS: v15 references, sitter structure, cache shell, and v12→v13 migration verified.");
+console.log("STATIC SMOKE PASS: v16 references, sitter structure, cache shell, and v12→v13 migration verified.");
