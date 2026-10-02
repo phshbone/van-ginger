@@ -13,7 +13,7 @@ test("two-dog sitter lifecycle persists across reload", async ({ page }) => {
   await page.locator("#sitterSleep").fill("Van sleeps in the den.");
   await page.getByRole("button",{name:"Save instructions"}).click();
 
-  await page.getByRole("button",{name:"Ginger",exact:true}).click();
+  await page.locator('.dog-tab[data-dog="ginger"]').click();
   await page.locator("#sitterPotty").fill("Ginger outside after meals.");
   await page.locator("#sitterInstructions").fill("Keep Ginger on short walks.");
   await page.getByRole("button",{name:"Activate Sitter Mode"}).click();
