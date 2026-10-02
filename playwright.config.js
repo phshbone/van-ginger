@@ -1,7 +1,7 @@
 const { defineConfig } = require("@playwright/test");
 
 const deployedBaseURL=(process.env.BASE_URL||"").trim();
-const localBaseURL="http://127.0.0.1:4173";
+const localBaseURL="http://127.0.0.1:4173/";
 
 module.exports = defineConfig({
   testDir: "./tests",
