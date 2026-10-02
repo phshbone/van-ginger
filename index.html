@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Van & Ginger">
 <title>Van & Ginger Senior Care</title>
-<link rel="stylesheet" href="styles-v13.css">
+<link rel="stylesheet" href="styles-v14.css">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <script>
@@ -97,20 +97,80 @@ html.install-required #splashScreen{display:none!important}
     <section id="medications" class="screen">
       <article class="card">
         <div class="section-head"><div><div class="eyebrow">active care</div><h2 id="medPageTitle">Van’s medications & treatments</h2></div><span class="dog-chip" id="medDogChip">Van</span></div>
-        <div class="form-grid three">
-          <div><label>Type</label><select id="treatmentType"><option>Medication</option><option>Vaccination</option><option>Flea & tick</option><option>Heartworm</option><option>Supplement</option><option>Other treatment</option></select></div>
-          <div><label>Name</label><input id="treatmentName" placeholder="e.g. Galliprant"></div>
-          <div><label>Dosage</label><input id="treatmentDosage" placeholder="e.g. 20 mg"></div>
-          <div><label>Frequency</label><input id="treatmentFrequency" placeholder="e.g. once daily"></div>
-          <div><label>Time of day</label><input id="treatmentTime" placeholder="e.g. with breakfast"></div>
-          <div><label>Date started / given</label><input id="treatmentStart" type="date"></div>
-          <div><label>Next due date</label><input id="treatmentDue" type="date"></div>
-          <div><label>End date</label><input id="treatmentEnd" type="date"></div>
-          <div><label>Prescribing veterinarian</label><input id="treatmentVet" placeholder="Optional"></div>
+        <div class="treatment-form-section">
+          <div class="form-section-label"><span>1</span><strong>What</strong></div>
+          <div class="form-grid three">
+            <div><label>Type</label><select id="treatmentType"><option>Medication</option><option>Vaccination</option><option>Flea & tick</option><option>Heartworm</option><option>Supplement</option><option>Other treatment</option></select></div>
+            <div><label>Name</label><input id="treatmentName" placeholder="e.g. Galliprant"></div>
+            <div><label>Dosage</label><input id="treatmentDosage" placeholder="e.g. 1 tablet or 20 mg"></div>
+          </div>
         </div>
-        <div class="form-grid two-fields">
-          <div><label>Instructions</label><textarea id="treatmentInstructions" placeholder="How and when to give it"></textarea></div>
-          <div><label>Refill or general note</label><textarea id="treatmentNote" placeholder="Refill details, reactions, or reminders"></textarea></div>
+
+        <div class="treatment-form-section">
+          <div class="form-section-label"><span>2</span><strong>Schedule</strong></div>
+          <div class="form-grid three">
+            <div>
+              <label>Frequency</label>
+              <select id="treatmentFrequencyChoice" onchange="updateTreatmentScheduleFields()">
+                <option value="">Choose frequency</option>
+                <option>Once daily</option>
+                <option>Twice daily</option>
+                <option>Three times daily</option>
+                <option>Every 8 hours</option>
+                <option>Every 12 hours</option>
+                <option>Every other day</option>
+                <option>As needed (PRN)</option>
+                <option>Weekly</option>
+                <option>Monthly</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div id="treatmentFrequencyOtherWrap" class="conditional-field hidden">
+              <label>Other frequency</label>
+              <input id="treatmentFrequencyOther" placeholder="Type the schedule">
+            </div>
+            <div>
+              <label>Time of day</label>
+              <select id="treatmentDaypartChoice" onchange="updateTreatmentScheduleFields()">
+                <option value="">Choose time of day</option>
+                <option>Morning (AM)</option>
+                <option>Afternoon (PM)</option>
+                <option>Evening (PM)</option>
+                <option>Bedtime (PM)</option>
+                <option>Anytime / as needed</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div id="treatmentDaypartOtherWrap" class="conditional-field hidden">
+              <label>Other time description</label>
+              <input id="treatmentDaypartOther" placeholder="e.g. with breakfast">
+            </div>
+            <div>
+              <label>Exact time <span class="label-note">optional</span></label>
+              <input id="treatmentExactTime" type="time">
+              <small class="field-help">On iPhone this uses the native time picker.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="treatment-form-section">
+          <div class="form-section-label"><span>3</span><strong>Tracking</strong></div>
+          <div class="form-grid three">
+            <div><label>Date started / given</label><input id="treatmentStart" type="date"></div>
+            <div><label>Time started / given <span class="label-note">optional</span></label><input id="treatmentStartTime" type="time"></div>
+            <div><label>Next due date</label><input id="treatmentDue" type="date"></div>
+            <div><label>Next due time <span class="label-note">optional</span></label><input id="treatmentDueTime" type="time"></div>
+            <div><label>End date</label><input id="treatmentEnd" type="date"></div>
+            <div><label>Prescribing veterinarian</label><input id="treatmentVet" placeholder="Optional"></div>
+          </div>
+        </div>
+
+        <div class="treatment-form-section">
+          <div class="form-section-label"><span>4</span><strong>Notes</strong></div>
+          <div class="form-grid two-fields">
+            <div><label>Instructions</label><textarea id="treatmentInstructions" placeholder="e.g. Give with food; split tablet"></textarea></div>
+            <div><label>Refill or general note</label><textarea id="treatmentNote" placeholder="Refill details, reactions, or reminders"></textarea></div>
+          </div>
         </div>
         <div class="actions"><button class="primary" id="treatmentSaveBtn" onclick="saveTreatment()">Add medication or treatment</button><button class="secondary hidden" id="treatmentCancelBtn" onclick="cancelTreatmentEdit()">Cancel edit</button></div>
       </article>
@@ -247,6 +307,6 @@ html.install-required #splashScreen{display:none!important}
   <button class="nav" data-screen="log" onclick="showScreen('log',this)"><span class="nav-icon">≡</span><span>Log</span></button>
   <button class="nav" data-screen="more" onclick="showScreen('more',this)"><span class="nav-icon">•••</span><span>More</span></button>
 </nav>
-<script src="app-v13.js" defer></script>
+<script src="app-v14.js" defer></script>
 </body>
 </html>
