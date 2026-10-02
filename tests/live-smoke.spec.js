@@ -54,7 +54,7 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
 
   await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
-  await page.getByRole("button",{name:"Medications"}).click();
+  await page.locator('.nav[data-screen="medications"]').click();
 
   await page.locator("#treatmentName").fill("Test Medicine");
   await page.locator("#treatmentDosage").fill("1 tablet");
