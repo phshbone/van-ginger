@@ -94,41 +94,20 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
 });
 
 
-test("phone footer anchors to viewport with dark underfill and larger controls", async ({ page }, testInfo) => {
+test("phone footer itself reaches physical-bottom extension", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.includes("phone"),"mobile-only footer check");
-
   await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
-
-  await page.locator('.dog-tab[data-dog="ginger"]').click();
-
   const metrics=await page.evaluate(()=>{
     const el=document.querySelector(".bottom-nav");
-    const nav=el.querySelector(".nav");
-    const icon=el.querySelector(".nav-icon");
-    const rect=el.getBoundingClientRect();
-    const root=getComputedStyle(document.documentElement);
-    const body=getComputedStyle(document.body);
+    const more=document.querySelector('.nav[data-screen="more"]');
+    const rect=el.getBoundingClientRect(), button=more.getBoundingClientRect();
     const after=getComputedStyle(el,"::after");
-    return {
-      bottom:rect.bottom,
-      viewport:window.innerHeight,
-      rootBackground:root.backgroundColor,
-      bodyBackground:body.backgroundColor,
-      underfillHeight:parseFloat(after.height),
-      underfillBackground:after.backgroundColor,
-      navFont:parseFloat(getComputedStyle(nav).fontSize),
-      iconFont:parseFloat(getComputedStyle(icon).fontSize)
-    };
+    return {bottom:rect.bottom,viewport:window.innerHeight,buttonBottom:button.bottom,afterContent:after.content};
   });
-
-  expect(Math.abs(metrics.bottom-metrics.viewport)).toBeLessThan(2);
-  expect(metrics.underfillHeight).toBeGreaterThanOrEqual(139);
-  expect(metrics.rootBackground).toBe(metrics.underfillBackground);
-  expect(metrics.bodyBackground).toBe(metrics.underfillBackground);
-  expect(metrics.navFont).toBeGreaterThanOrEqual(12);
-  expect(metrics.iconFont).toBeGreaterThanOrEqual(20);
-  await expect(page.locator('.nav[data-screen="more"]')).toBeVisible();
+  expect(metrics.bottom-metrics.viewport).toBeGreaterThanOrEqual(47);
+  expect(metrics.buttonBottom).toBeLessThanOrEqual(metrics.viewport+1);
+  expect(metrics.afterContent==="none"||metrics.afterContent==="normal").toBeTruthy();
   await page.locator('.nav[data-screen="more"]').click();
   await expect(page.locator("#more")).toHaveClass(/active/);
 });

@@ -2,14 +2,14 @@ import fs from "node:fs";
 import vm from "node:vm";
 
 const html=fs.readFileSync("index.html","utf8");
-const app=fs.readFileSync("app-v16.js","utf8");
-const css=fs.readFileSync("styles-v16.css","utf8");
-const sw=fs.readFileSync("sw-v16.js","utf8");
+const app=fs.readFileSync("app-v17.js","utf8");
+const css=fs.readFileSync("styles-v17.css","utf8");
+const sw=fs.readFileSync("sw-v17.js","utf8");
 
 function assert(condition,message){if(!condition)throw new Error(message)}
 
-assert(html.includes('styles-v16.css'),"index must load styles-v16.css");
-assert(html.includes('app-v16.js'),"index must load app-v16.js");
+assert(html.includes('styles-v17.css'),"index must load styles-v17.css");
+assert(html.includes('app-v17.js'),"index must load app-v17.js");
 assert(html.includes('id="sitterPanel"'),"sitter setup panel missing");
 assert(html.includes('id="sitterModal"'),"sitter modal missing");
 assert(html.includes('id="sitterEntryAlert"'),"sitter reopen alert missing");
@@ -35,8 +35,8 @@ assert(css.includes("html,body")&&css.includes("background-color:var(--header-ma
 const manifest=JSON.parse(fs.readFileSync("manifest.json","utf8"));
 assert(manifest.background_color==="#403b38","manifest PWA background must be dark");
 assert(css.includes("font-size:.78rem")&&css.includes("font-size:1.28rem"),"larger mobile nav typography missing");
-assert(sw.includes("van-ginger-senior-care-v16"),"service worker cache name is not v16");
-for(const ref of ["./styles-v16.css","./app-v16.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
+assert(sw.includes("van-ginger-senior-care-v17"),"service worker cache name is not v17");
+for(const ref of ["./styles-v17.css","./app-v17.js","./manifest.json","./assets/icon-192.png","./assets/icon-512.png"]){
   assert(sw.includes(ref),"service worker shell missing "+ref);
 }
 
@@ -61,4 +61,8 @@ assert(migrated.dogs.ginger.feedingItems[0].name==="Ginger Food","migration lost
 assert(migrated.dogs.van.sitter&&migrated.dogs.ginger.sitter,"migration must add sitter drafts");
 assert(migrated.sitterSession&&migrated.sitterSession.active===false,"migration must add inactive sitter session");
 
-console.log("STATIC SMOKE PASS: v16 references, sitter structure, cache shell, and v12→v13 migration verified.");
+console.log("STATIC SMOKE PASS: v17 references, sitter structure, cache shell, and v12→v13 migration verified.");
+
+assert(css.includes("--ios-physical-bottom:48px"),"physical-bottom footer offset missing");
+assert(css.includes("bottom:calc(-1 * var(--ios-physical-bottom))!important"),"footer is not extended to physical bottom");
+assert(css.includes("content:none!important"),"old footer underfill pseudo-element is still active");
