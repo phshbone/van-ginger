@@ -5,15 +5,13 @@ on:
     workflows: ["pages build and deployment"]
     types: [completed]
   workflow_dispatch:
-  pull_request:
-    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   deployed-live-smoke:
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
