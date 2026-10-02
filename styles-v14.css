@@ -162,3 +162,16 @@ html.install-required #splashScreen{display:none!important}
 .med-instructions{margin-top:7px!important;padding-top:7px;border-top:1px dashed var(--line)}
 .med-note{font-style:italic}
 @media(min-width:720px){.med-facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+/* v14 footer safe-area anchor
+   Keep the navigation controls in their existing position, but extend the
+   navigation background below iOS's effective layout viewport so no page
+   background can appear beneath the fixed bar. */
+@media(max-width:719px){
+  .bottom-nav{
+    --ios-footer-fill:max(env(safe-area-inset-bottom),44px);
+    bottom:calc(0px - var(--ios-footer-fill));
+    padding-bottom:calc(7px + env(safe-area-inset-bottom) + var(--ios-footer-fill));
+  }
+}
