@@ -1,0 +1,42 @@
+name: Van & Ginger v13 Smoke Test
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install test dependencies
+        run: npm install
+
+      - name: Run static smoke test
+        run: npm run test:static
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run live smoke test
+        run: npm run test:live
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: van-ginger-v13-playwright-report
+          path: playwright-report
+          if-no-files-found: ignore
