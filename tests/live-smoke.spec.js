@@ -93,21 +93,52 @@ test("guided medication entry uses presets, AM/PM timing, and native time fields
   expect(pageErrors).toEqual([]);
 });
 
-
-test("phone footer itself reaches physical-bottom extension", async ({ page }, testInfo) => {
+test("phone uses structural bottom row with scrollable app shell", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.name.includes("phone"),"mobile-only footer check");
+
   await page.goto("index.html");
   await page.getByRole("button",{name:"Open care app"}).click();
-  const metrics=await page.evaluate(()=>{
-    const el=document.querySelector(".bottom-nav");
-    const more=document.querySelector('.nav[data-screen="more"]');
-    const rect=el.getBoundingClientRect(), button=more.getBoundingClientRect();
-    const after=getComputedStyle(el,"::after");
-    return {bottom:rect.bottom,viewport:window.innerHeight,buttonBottom:button.bottom,afterContent:after.content};
+
+  const before=await page.evaluate(()=>{
+    const shell=document.querySelector(".app-shell");
+    const nav=document.querySelector(".bottom-nav");
+    const shellRect=shell.getBoundingClientRect();
+    const navRect=nav.getBoundingClientRect();
+    const bodyStyle=getComputedStyle(document.body);
+    const shellStyle=getComputedStyle(shell);
+    const navStyle=getComputedStyle(nav);
+    return {
+      viewport:window.innerHeight,
+      bodyDisplay:bodyStyle.display,
+      bodyRows:bodyStyle.gridTemplateRows,
+      shellPosition:shellStyle.position,
+      navPosition:navStyle.position,
+      shellBottom:shellRect.bottom,
+      navTop:navRect.top,
+      navBottom:navRect.bottom,
+      navTopBefore:navRect.top,
+      scrollHeight:shell.scrollHeight,
+      clientHeight:shell.clientHeight
+    };
   });
-  expect(metrics.bottom-metrics.viewport).toBeGreaterThanOrEqual(47);
-  expect(metrics.buttonBottom).toBeLessThanOrEqual(metrics.viewport+1);
-  expect(metrics.afterContent==="none"||metrics.afterContent==="normal").toBeTruthy();
+
+  expect(before.bodyDisplay).toBe("grid");
+  expect(before.shellPosition).toBe("relative");
+  expect(before.navPosition).toBe("relative");
+  expect(Math.abs(before.shellBottom-before.navTop)).toBeLessThan(2);
+  expect(Math.abs(before.navBottom-before.viewport)).toBeLessThan(2);
+  expect(before.scrollHeight).toBeGreaterThan(before.clientHeight);
+
+  await page.locator(".app-shell").evaluate(el=>{el.scrollTop=500});
+  await page.waitForTimeout(50);
+  const after=await page.evaluate(()=>{
+    const shell=document.querySelector(".app-shell");
+    const nav=document.querySelector(".bottom-nav").getBoundingClientRect();
+    return {scrollTop:shell.scrollTop,navTop:nav.top};
+  });
+  expect(after.scrollTop).toBeGreaterThan(0);
+  expect(Math.abs(after.navTop-before.navTopBefore)).toBeLessThan(2);
+
   await page.locator('.nav[data-screen="more"]').click();
   await expect(page.locator("#more")).toHaveClass(/active/);
 });
